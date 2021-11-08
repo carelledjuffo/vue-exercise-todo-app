@@ -2,6 +2,7 @@
 
 <script>
 import TodoService from "../services/TodoService";
+import moment from 'moment'
 
 export default {
   name: "DoneList",
@@ -13,6 +14,13 @@ export default {
       return this.todos.filter(todo => todo.done === true);
     }
   },
+  filters: {
+    dateFormat:function (date) {
+      if (date) {
+        return moment(String(date)).format('MMMM Do YYYY, h:mm:ss a');
+      }
+    }
+  },
   methods: {
     getAllTodos() {
       TodoService.getTodos().then((result) => {
@@ -22,7 +30,7 @@ export default {
     markAsUndone(undone) {
       for(let i = 0; i< this.todos.length; i++) {
         let todo = this.todos[i];
-        if(todo.title === undone.title) {
+        if(todo.title === undone.title && todo.date == undone.date) {
           TodoService.markAsUndone(i);
           this.getAllTodos();
           this.$emit('update', true);
@@ -32,7 +40,7 @@ export default {
     deleteTodo(toDeleteTodo) {
       for(let i = 0; i< this.todos.length; i++) {
         let todo = this.todos[i];
-        if(todo.title === toDeleteTodo.title) {
+        if(todo.title === toDeleteTodo.title && todo.date == toDeleteTodo.date) {
           TodoService.deleteTodo(i);
           this.getAllTodos();
         }
@@ -57,7 +65,7 @@ export default {
       <tr v-for="(todo,index) in doneTodos" :key="todo.title">
         <td>{{index + 1}}</td>
         <td>{{todo.title}}</td>
-        <td>{{todo.date}}</td>
+        <td>{{todo.date | dateFormat}}</td>
         <td>
           <span> <button class="btn btn-secondary" @click="markAsUndone(todo)"> undone </button> <button class="btn btn-danger" @click="deleteTodo(todo)"> Delete </button></span>
         </td>

@@ -1,15 +1,29 @@
 <script>
 import TodoService from "../services/TodoService";
+import moment from "moment";
 
 export default {
   name: "UndoneList",
   props: {
     todos: [],
   },
+  data() {
+    return {
+      edit: null,
+      newTitle:''
+    }
+  },
   computed: {
     todoTodos() {
       return this.todos.filter(todo => todo.done === false)
     },
+  },
+  filters: {
+    dateFormat:function (date) {
+      if (date) {
+        return moment(String(date)).format('MMMM Do YYYY, h:mm:ss a');
+      }
+    }
   },
   methods: {
     markAsDone(done) {
@@ -25,6 +39,19 @@ export default {
         }
       }
     },
+    editAndSave(toEdit) {
+      for(let i = 0; i< this.todos.length; i++) {
+        let todo = this.todos[i];
+        if(todo.title === toEdit.title) {
+          console.log(toEdit);
+          TodoService.editTodo({title: toEdit.title, index: i})
+          this.$emit('update', true);
+          break;
+        }
+      }
+      this.edit = null;
+
+    }
   }
 }
 </script>
@@ -43,9 +70,21 @@ export default {
       <tbody>
       <tr v-for="(todo , index) in todoTodos" :key="todo.title">
         <td>{{index + 1}}</td>
-        <td>{{todo.title}}</td>
-        <td>{{todo.date}}</td>
-        <td><button class="btn btn-secondary" @click="markAsDone(todo)"> Done </button></td>
+        <td>
+          <input v-if="edit == index" v-model="newTitle">
+          <span v-else>{{todo.title}}</span>
+        </td>
+        <td>{{todo.date | dateFormat}}</td>
+        <td>
+          <button class="btn btn-secondary" @click="markAsDone(todo)"> Done </button>
+        <!--
+          <div v-if="edit == index">
+            <button  class="btn btn-primary" @click="editAndSave(todo)"> Save </button>
+            <button  class="btn btn-danger" @click="edit = false;"> Cancel </button>
+          </div>
+          <button v-else class="btn btn-secondary" @click="edit = index"> edit </button>
+          -->
+        </td>
       </tr>
       </tbody>
     </table>

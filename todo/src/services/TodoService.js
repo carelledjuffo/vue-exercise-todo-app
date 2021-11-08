@@ -50,7 +50,13 @@ export default {
             console.log(error);
 
         }
+    },
+    async editTodo(todoInfo) {
+        try {
+            await axios.put('http://localhost:8080/edit', {todo: todoInfo});
+        } catch (error) {
+            console.log(error);
+        }
     }
-
 
 }

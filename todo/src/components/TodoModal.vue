@@ -31,7 +31,8 @@ export default {
   methods: {
     addNewTodo: function () {
       TodoService.postNewTodo(this.title);
-    }
+      this.$emit('update', true);
+    },
   }
 }
 </script>

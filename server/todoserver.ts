@@ -87,6 +87,20 @@ router.put('/done/:id', function(req: Request, res: Response) {
   }
   res.json({'message': message});
 });
+router.put('/edit', function (req: Request, res: Response) {
+  let title: string = (req.body.todo.title ? req.body.todo.title : '');
+  let index: number = req.body.todo.index;
+  let message = '';
+  if (title.trim().length !== 0) {
+    todoList[index].title = title;
+    message = `${title} erfolgreich updated`;
+    res.status(201);
+  } else {
+    res.status(400);
+    message = 'Keinen title angegeben';
+  }
+  res.json({'message': message});
+});
 
 router.put('/undone/:id', function(req: Request, res: Response) {
   let id: number = req.params.id;

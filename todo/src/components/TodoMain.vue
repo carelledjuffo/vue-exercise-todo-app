@@ -1,19 +1,13 @@
 <template>
   <div class="main-app">
-    <TodoHeader />
-    <TodoModal />
+    <TodoModal v-on:update="getAllTodos" />
     <UndoneList  v-bind:todos="todos"  v-on:update="getAllTodos"/>
-    <DoneList v-bind:todos="todos" v-on:update="getAllTodos" />
-
-
   </div>
 
 </template>
 
 <script>
 import TodoModal from "./TodoModal";
-import TodoHeader from "./TodoHeader";
-import DoneList from "./DoneList";
 import TodoService from "../services/TodoService";
 import UndoneList from "./UndonelIst";
 export default {
@@ -31,9 +25,7 @@ export default {
   },
   components: {
     UndoneList,
-    DoneList,
     TodoModal,
-    TodoHeader
   },
   created() {
    this.getAllTodos();
